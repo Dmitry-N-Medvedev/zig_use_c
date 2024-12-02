@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  ci:
+    env:
+      PNPM_STORE_PATH: .pnpm-store
+    runs-on: ubuntu-24.04
+    defaults:
+      run: 
+        shell: bash
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      
+      - name: setup zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: latest
+     
+      - name: setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.14.4
+          run_install: false
+          standalone: true
+      
+      - name: install Node.JS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23.3.0
+      
+      - name: restore all caches
+        id: restore-all-caches
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            /home/runner/.cache/please
+            plz-out
+            ${{ env.PNPM_STORE_PATH }}
+          key: restore-all-caches-key
+
+      - name: setup Please
+        uses: sagikazarmark/setup-please-action@v0
+        with:
+          output: all
+          verbosity: debug
+          save-logs: true
+      
+      - name: test
+        run: plz test .//...
+      
+      - name: save all caches
+        id: save-all-caches
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            /home/runner/.cache/please
+            plz-out
+            ${{ env.PNPM_STORE_PATH }}
+          key: ${{ steps.restore-all-caches.outputs.cache-primary-key }}
