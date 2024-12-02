@@ -19,5 +19,5 @@ zig build test
 this statement was missing for the whole thing to succeed:
 
 ```zig
-  lib_unit_tests.addLibraryPath(b.path("zig-out/lib/libadd_function_c.a"));
+lib_unit_tests.addLibraryPath(b.path(lib.installed_path orelse ""));
 ```
