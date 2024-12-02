@@ -35,6 +35,7 @@ genrule(
 
 gentest(
   name = "test",
+  no_test_output = True,
   data = [
     ":sources",
   ],
@@ -43,6 +44,6 @@ gentest(
   ],
   test_cmd = [
     "cd enum/lib",
-    "zig test src/root.zig",
+    "zig build test",
   ],
 )
