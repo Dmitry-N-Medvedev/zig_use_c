@@ -1,0 +1,48 @@
+package(
+  default_visibility = ["PUBLIC"],
+)
+
+filegroup(
+  name = "sources",
+  srcs = [
+    "lib/build.zig.zon",
+    "lib/build.zig",
+    "lib/src/root.zig",
+    "lib/src/include/add_function.h",
+  ],
+)
+
+genrule(
+  name = "build",
+  exit_on_error = True,
+  binary = True,
+  srcs = [
+    ":sources",
+  ],
+  outs = [
+    "results",
+  ],
+  cmd = [
+    "mkdir -p $OUT",
+    "cd enum/lib",
+    "$TOOLS_ZIG build",
+    "cp -r zig-out/lib/* $OUT",
+  ],
+  tools = {
+    "zig": "zig",
+  },
+)
+
+gentest(
+  name = "test",
+  data = [
+    ":sources",
+  ],
+  deps = [
+    ":build",
+  ],
+  test_cmd = [
+    "cd enum/lib",
+    "zig test src/root.zig",
+  ],
+)
