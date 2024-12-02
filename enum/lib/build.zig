@@ -9,7 +9,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    lib.addIncludePath(b.path("src/c"));
+    lib.addIncludePath(b.path("src/include"));
     lib.linkLibC();
 
     b.installArtifact(lib);
@@ -19,10 +19,12 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    lib_unit_tests.addIncludePath(b.path("src/c"));
+    lib_unit_tests.addIncludePath(b.path("src/include"));
+    lib_unit_tests.linkLibC();
 
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_lib_unit_tests.step);
+    test_step.dependOn(&lib.step);
 }
