@@ -20,9 +20,11 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     lib_unit_tests.addIncludePath(b.path("include"));
+    lib_unit_tests.linkLibC();
 
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
 
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_lib_unit_tests.step);
+    test_step.dependOn(&lib.step);
 }
