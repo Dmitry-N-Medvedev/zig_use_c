@@ -15,11 +15,15 @@ layout {
 
       pane {
         name "plz build .//..."
-        size "50%"
+        size "33%"
       }
       pane {
         name "plz test .//..."
-        size "50%"
+        size "33%"
+      }
+      pane {
+        name "git"
+        size "33%"
       }
     }
   }
